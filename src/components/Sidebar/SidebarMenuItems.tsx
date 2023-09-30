@@ -17,8 +17,6 @@ const SidebarMenuItem: FC<Props> = ({ className, menuItem }) => {
   let { "*": slug } = useParams();
   const { pathname } = useLocation();
 
-  console.log(slug);
-
   const classes =
     "mb-1 flex px-5 py-[12px] rounded-[10px] items-center duration-600 hover:text-blue-800 focus:text-blue-800 hover:bg-blue-100 focus:bg-blue-100 hover:no-underline focus:no-underline hover:fill-white leading-none ";
 
@@ -48,8 +46,6 @@ const SidebarMenuItem: FC<Props> = ({ className, menuItem }) => {
       }
     }
   }, [pathname]);
-
-  console.log(menuItemRef.current);
 
   return (
     <li className={className} ref={menuItemRef}>
