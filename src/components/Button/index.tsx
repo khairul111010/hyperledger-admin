@@ -28,10 +28,10 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const sizeClass = {
-    small: "text-xs px-3 h-[32px] rounded-[8px]",
-    medium: "text-base px-4 h-[42px] rounded-[10px]",
-    large: "text-lg px-6 h-[56px] rounded-lg",
-    xlarge: "text-xl px-8 h-[72px] rounded-xl",
+    small: "text-xs px-3 h-[40px]",
+    medium: "text-base px-4 h-[42px]",
+    large: "text-lg px-6 h-[56px]",
+    xlarge: "text-xl px-8 h-[72px]",
   }[size];
 
   const variantClass = {
@@ -48,7 +48,7 @@ const Button = ({
   }[variant];
 
   const bgClass = {
-    primary: "bg-primary",
+    primary: "bg-[#013A44]",
     "primary-light": "bg-primary/10",
     secondary: "bg-secondary",
     tertiary: "bg-tertiary",

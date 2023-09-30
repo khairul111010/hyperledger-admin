@@ -36,10 +36,10 @@ const TextInput: FC<Props> = ({
   ...rest
 }) => {
   const sizeClass = {
-    small: "text-xs px-3 h-[32px] rounded-[8px]",
-    medium: "text-base px-4 h-[42px] rounded-[10px]",
-    large: "text-lg px-6 h-[56px] rounded-lg",
-    xlarge: "text-xl px-8 h-[72px] rounded-xl",
+    small: "text-xs px-3 h-[32px]",
+    medium: "text-base px-4 h-[42px]",
+    large: "text-lg px-6 h-[56px]",
+    xlarge: "text-xl px-8 h-[72px]",
   }[size];
 
   const [field, meta, helpers] = useField(name || "");
@@ -58,7 +58,7 @@ const TextInput: FC<Props> = ({
     >
       {label && (
         <label
-          className={`inline-block mb-1 text-gray-500 ${
+          className={`inline-block mb-1 text-xs text-gray-500 ${
             typeof labelStyle === "string" && labelStyle
           }`}
           style={(typeof labelStyle === "object" && labelStyle) || undefined}
@@ -80,12 +80,12 @@ const TextInput: FC<Props> = ({
       />
       {helperMessage &&
         (typeof helperMessage === "string" ? (
-          <div className="text-sm text-gray-500">{helperMessage}</div>
+          <div className="text-xs text-gray-500">{helperMessage}</div>
         ) : (
           helperMessage
         ))}
       {meta.error && meta.touched && (
-        <div className="text-sm text-red-500 mt-1">{meta.error}</div>
+        <div className="text-xs text-red-500 mt-1">{meta.error}</div>
       )}
     </div>
   );
