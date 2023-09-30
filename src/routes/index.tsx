@@ -1,8 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { App } from "../pages";
+import { Dashboard } from "../pages";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Institution from "../pages/institution";
+import Instructor from "../pages/instructor";
 import MasterLayout from "../pages/layouts/MasterLayout";
+import Learner from "../pages/learner";
 
 const AllRoutes = () => {
   return (
@@ -11,7 +14,10 @@ const AllRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<MasterLayout />}>
-          <Route index element={<App />} />
+          <Route index element={<Dashboard />} />
+          <Route path="/instructor" element={<Instructor />} />
+          <Route path="/institution" element={<Institution />} />
+          <Route path="/learner" element={<Learner />} />
         </Route>
       </Routes>
     </BrowserRouter>
