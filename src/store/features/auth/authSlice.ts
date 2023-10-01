@@ -4,15 +4,19 @@ export enum authEnum {
 }
 export interface AuthState {
   user: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
+    id: number | null;
+    name: string | null;
+    email: string | null;
+  };
   accessToken: string | null; // jwt token
 }
 
 const initialState: AuthState = {
-  user: null,
+  user: {
+    id: null,
+    name: null,
+    email: null,
+  },
   accessToken: null,
 };
 
@@ -21,15 +25,16 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userLoggedIn: (state, action) => {
-      state.accessToken = action.payload.accessToken;
-      state.user = action.payload.user;
+      console.log("payload", action.payload);
+
+      state.accessToken = action.payload.token;
+      state.user.id = action.payload.id;
+      state.user.name = action.payload.name;
+      state.user.email = action.payload.email;
       localStorage.setItem(
         authEnum.AUTH_LOCAL_STORAGE_KEY,
-        action.payload.accessToken
+        action.payload.token
       );
-    },
-    updateUser: (state, action) => {
-      state.user = { ...state.user, ...action.payload };
     },
     userLoggedOut: () => {
       localStorage.removeItem(authEnum.AUTH_LOCAL_STORAGE_KEY);
@@ -38,5 +43,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { userLoggedIn, updateUser, userLoggedOut } = authSlice.actions;
+export const { userLoggedIn, userLoggedOut } = authSlice.actions;
 export default authSlice.reducer;

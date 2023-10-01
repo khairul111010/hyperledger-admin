@@ -1,9 +1,13 @@
 import { Form, Formik, FormikProps } from "formik";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { object, string } from "yup";
 import Button from "../components/Button";
 import TextInput from "../components/TextInput";
+import { useLoginAdminMutation } from "../store/features/admin/adminApi";
+import { userLoggedIn } from "../store/features/auth/authSlice";
 
 const initialValues = {
   email: "",
@@ -21,9 +25,26 @@ const validationSchema = object().shape({
 
 const Login = () => {
   const formikRef = useRef<FormikProps<any>>(null);
+  const [loginAdmin] = useLoginAdminMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSubmit = async (values: any) => {
     try {
-      console.log(values);
+      loginAdmin({
+        email: values.email,
+        password: values.password,
+      })
+        .unwrap()
+        .then((res: any) => {
+          if (res && res.status === 201) {
+            dispatch(userLoggedIn(res.result));
+            toast.success("Successfully Signed In");
+            navigate("/");
+          }
+        })
+        .catch((e: any) => {
+          toast.error("Something went wrong");
+        });
     } catch (e) {}
   };
   return (
