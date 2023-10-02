@@ -5,13 +5,18 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { object, string } from "yup";
 import Button from "../components/Button";
+import SelectInput from "../components/SelectInput";
 import TextInput from "../components/TextInput";
 import { useLoginAdminMutation } from "../store/features/admin/adminApi";
 import { userLoggedIn } from "../store/features/auth/authSlice";
+import { useLoginInstitutionMutation } from "../store/features/institution/institutionApi";
+import { useLoginInstructorMutation } from "../store/features/instructor/instructorApi";
+import { useLoginLearnerMutation } from "../store/features/learner/learnerApi";
 
 const initialValues = {
   email: "",
   password: "",
+  type: "learner",
 };
 
 const validationSchema = object().shape({
@@ -21,30 +26,86 @@ const validationSchema = object().shape({
   password: string()
     .required("Password is required.")
     .min(8, "Password must be 8 characters."),
+  type: string()
+    .required("Please select a type")
+    .oneOf(["admin", "institution", "instructor", "learner"]),
 });
 
 const Login = () => {
   const formikRef = useRef<FormikProps<any>>(null);
   const [loginAdmin] = useLoginAdminMutation();
+  const [loginInstitution] = useLoginInstitutionMutation();
+  const [loginInstructor] = useLoginInstructorMutation();
+  const [loginLearner] = useLoginLearnerMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSubmit = async (values: any) => {
     try {
-      loginAdmin({
-        email: values.email,
-        password: values.password,
-      })
-        .unwrap()
-        .then((res: any) => {
-          if (res && res.status === 201) {
-            dispatch(userLoggedIn(res.result));
-            toast.success("Successfully Signed In");
-            navigate("/");
-          }
+      if (values.type === "admin") {
+        loginAdmin({
+          email: values.email,
+          password: values.password,
         })
-        .catch((e: any) => {
-          toast.error("Something went wrong");
-        });
+          .unwrap()
+          .then((res: any) => {
+            if (res && res.status === 201) {
+              dispatch(userLoggedIn(res.result));
+              toast.success("Successfully Signed In");
+              navigate("/");
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else if (values.type === "institution") {
+        loginInstitution({
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((res: any) => {
+            if (res && res.status === 201) {
+              dispatch(userLoggedIn(res.result));
+              toast.success("Successfully Signed In");
+              navigate("/");
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else if (values.type === "instructor") {
+        loginInstructor({
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((res: any) => {
+            if (res && res.status === 201) {
+              dispatch(userLoggedIn(res.result));
+              toast.success("Successfully Signed In");
+              navigate("/");
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else {
+        loginLearner({
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((res: any) => {
+            if (res && res.status === 201) {
+              dispatch(userLoggedIn(res.result));
+              toast.success("Successfully Signed In");
+              navigate("/");
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      }
     } catch (e) {}
   };
   return (
@@ -71,6 +132,18 @@ const Login = () => {
               label="Password"
               containerStyle={`w-full`}
               size="small"
+            />
+            <SelectInput
+              containerStyle={"w-full"}
+              label="Login As"
+              size="small"
+              name="type"
+              options={[
+                { value: "admin", label: "Admin" },
+                { value: "institution", label: "Institution" },
+                { value: "instructor", label: "Instructor" },
+                { value: "learner", label: "Learner" },
+              ]}
             />
             <Button
               size="small"

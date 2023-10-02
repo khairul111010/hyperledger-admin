@@ -12,6 +12,18 @@ import {
   useRegisterAdminMutation,
 } from "../store/features/admin/adminApi";
 import { userLoggedIn } from "../store/features/auth/authSlice";
+import {
+  useLoginInstitutionMutation,
+  useRegisterInstitutionMutation,
+} from "../store/features/institution/institutionApi";
+import {
+  useLoginInstructorMutation,
+  useRegisterInstructorMutation,
+} from "../store/features/instructor/instructorApi";
+import {
+  useLoginLearnerMutation,
+  useRegisterLearnerMutation,
+} from "../store/features/learner/learnerApi";
 const initialValues = {
   name: "",
   email: "",
@@ -40,6 +52,12 @@ const Login = () => {
   const formikRef = useRef<FormikProps<any>>(null);
   const [registerAdmin] = useRegisterAdminMutation();
   const [loginAdmin] = useLoginAdminMutation();
+  const [registerInstitution] = useRegisterInstitutionMutation();
+  const [loginInstitution] = useLoginInstitutionMutation();
+  const [registerInstructor] = useRegisterInstructorMutation();
+  const [loginInstructor] = useLoginInstructorMutation();
+  const [registerLearner] = useRegisterLearnerMutation();
+  const [loginLearner] = useLoginLearnerMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSubmit = (values: any) => {
@@ -54,6 +72,93 @@ const Login = () => {
           .then((result: any) => {
             if (result && result.status === 201) {
               loginAdmin({
+                email: values.email,
+                password: values.password,
+              })
+                .unwrap()
+                .then((res: any) => {
+                  if (res && res.status === 201) {
+                    dispatch(userLoggedIn(res.result));
+                    toast.success("Successfully Signed In");
+                    navigate("/");
+                  }
+                })
+                .catch((e: any) => {
+                  toast.error("Something went wrong");
+                });
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else if (values.type === "institution") {
+        registerInstitution({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((result: any) => {
+            if (result && result.status === 201) {
+              loginInstitution({
+                email: values.email,
+                password: values.password,
+              })
+                .unwrap()
+                .then((res: any) => {
+                  if (res && res.status === 201) {
+                    dispatch(userLoggedIn(res.result));
+                    toast.success("Successfully Signed In");
+                    navigate("/");
+                  }
+                })
+                .catch((e: any) => {
+                  toast.error("Something went wrong");
+                });
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else if (values.type === "instructor") {
+        registerInstructor({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((result: any) => {
+            if (result && result.status === 201) {
+              loginInstructor({
+                email: values.email,
+                password: values.password,
+              })
+                .unwrap()
+                .then((res: any) => {
+                  if (res && res.status === 201) {
+                    dispatch(userLoggedIn(res.result));
+                    toast.success("Successfully Signed In");
+                    navigate("/");
+                  }
+                })
+                .catch((e: any) => {
+                  toast.error("Something went wrong");
+                });
+            }
+          })
+          .catch((e: any) => {
+            toast.error("Something went wrong");
+          });
+      } else {
+        registerLearner({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+          .unwrap()
+          .then((result: any) => {
+            if (result && result.status === 201) {
+              loginLearner({
                 email: values.email,
                 password: values.password,
               })

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 export enum authEnum {
   AUTH_LOCAL_STORAGE_KEY = "auth-key",
+  AUTH_USER_KEY = "auth-user",
 }
 export interface AuthState {
   user: {
@@ -25,8 +26,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userLoggedIn: (state, action) => {
-      console.log("payload", action.payload);
-
       state.accessToken = action.payload.token;
       state.user.id = action.payload.id;
       state.user.name = action.payload.name;
@@ -35,9 +34,11 @@ const authSlice = createSlice({
         authEnum.AUTH_LOCAL_STORAGE_KEY,
         action.payload.token
       );
+      localStorage.setItem(authEnum.AUTH_USER_KEY, JSON.stringify(state.user));
     },
     userLoggedOut: () => {
       localStorage.removeItem(authEnum.AUTH_LOCAL_STORAGE_KEY);
+      localStorage.removeItem(authEnum.AUTH_USER_KEY);
       return initialState;
     },
   },
