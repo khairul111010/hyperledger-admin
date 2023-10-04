@@ -82,14 +82,8 @@ const Login = () => {
                     toast.success("Successfully Signed In");
                     navigate("/");
                   }
-                })
-                .catch((e: any) => {
-                  toast.error("Something went wrong");
                 });
             }
-          })
-          .catch((e: any) => {
-            toast.error("Something went wrong");
           });
       } else if (values.type === "institution") {
         registerInstitution({
@@ -111,14 +105,8 @@ const Login = () => {
                     toast.success("Successfully Signed In");
                     navigate("/");
                   }
-                })
-                .catch((e: any) => {
-                  toast.error("Something went wrong");
                 });
             }
-          })
-          .catch((e: any) => {
-            toast.error("Something went wrong");
           });
       } else if (values.type === "instructor") {
         registerInstructor({
@@ -140,14 +128,8 @@ const Login = () => {
                     toast.success("Successfully Signed In");
                     navigate("/");
                   }
-                })
-                .catch((e: any) => {
-                  toast.error("Something went wrong");
                 });
             }
-          })
-          .catch((e: any) => {
-            toast.error("Something went wrong");
           });
       } else {
         registerLearner({
@@ -169,17 +151,12 @@ const Login = () => {
                     toast.success("Successfully Signed In");
                     navigate("/");
                   }
-                })
-                .catch((e: any) => {
-                  toast.error("Something went wrong");
                 });
             }
-          })
-          .catch((e: any) => {
-            toast.error("Something went wrong");
           });
       }
     } catch (e) {
+      console.log(e);
       toast.error("Something went wrong");
     }
   };
