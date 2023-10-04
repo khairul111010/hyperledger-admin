@@ -39,6 +39,17 @@ const mainMenuItems = [
     ],
     icon: BsBoxSeam,
   },
+  {
+    name: "Excel",
+    to: "",
+    subMenu: [
+      {
+        name: "List",
+        to: "/excel",
+      },
+    ],
+    icon: BsBoxSeam,
+  },
 ];
 
 export default mainMenuItems;

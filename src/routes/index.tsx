@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Dashboard } from "../pages";
+import ExcelRead from "../pages/ExcelRead";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Institution from "../pages/institution";
@@ -18,6 +19,7 @@ const AllRoutes = () => {
           <Route path="instructor" element={<Instructor />} />
           <Route path="institution" element={<Institution />} />
           <Route path="learner" element={<Learner />} />
+          <Route path="excel" element={<ExcelRead />} />
         </Route>
       </Routes>
     </BrowserRouter>
