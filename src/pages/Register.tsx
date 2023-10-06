@@ -29,6 +29,7 @@ const initialValues = {
   email: "",
   password: "",
   confirm: "",
+  publicAddress: "",
   type: "learner",
 };
 
@@ -43,6 +44,7 @@ const validationSchema = object().shape({
   confirm: string()
     .required("Please retype your password.")
     .oneOf([ref("password")], "Passwords does not match"),
+  publicAddress: string().required("Please enter your public address"),
   type: string()
     .required("Please select a type")
     .oneOf(["admin", "institution", "instructor", "learner"]),
@@ -67,6 +69,7 @@ const Login = () => {
           name: values.name,
           email: values.email,
           password: values.password,
+          publicAddress: values.publicAddress,
         })
           .unwrap()
           .then((result: any) => {
@@ -86,10 +89,14 @@ const Login = () => {
             }
           });
       } else if (values.type === "institution") {
+        // const contract = getContract();
+        // console.log(contract);
+
         registerInstitution({
           name: values.name,
           email: values.email,
           password: values.password,
+          publicAddress: values.publicAddress,
         })
           .unwrap()
           .then((result: any) => {
@@ -113,6 +120,7 @@ const Login = () => {
           name: values.name,
           email: values.email,
           password: values.password,
+          publicAddress: values.publicAddress,
         })
           .unwrap()
           .then((result: any) => {
@@ -136,6 +144,7 @@ const Login = () => {
           name: values.name,
           email: values.email,
           password: values.password,
+          publicAddress: values.publicAddress,
         })
           .unwrap()
           .then((result: any) => {
@@ -196,6 +205,13 @@ const Login = () => {
               name="confirm"
               type="password"
               label="Confirm Password"
+              containerStyle={`w-full`}
+              size="small"
+            />
+            <TextInput
+              name="publicAddress"
+              type="text"
+              label="Public Address"
               containerStyle={`w-full`}
               size="small"
             />

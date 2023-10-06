@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Dashboard } from "../pages";
 import ExcelRead from "../pages/ExcelRead";
 import Login from "../pages/Login";
+import MetaConnect from "../pages/MetaConnect";
 import Register from "../pages/Register";
 import Institution from "../pages/institution";
 import Instructor from "../pages/instructor";
@@ -12,6 +13,7 @@ const AllRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/connect" element={<MetaConnect />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<MasterLayout />}>
