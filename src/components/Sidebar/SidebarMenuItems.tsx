@@ -18,7 +18,7 @@ const SidebarMenuItem: FC<Props> = ({ className, menuItem }) => {
   const { pathname } = useLocation();
 
   const classes =
-    "mb-1 flex px-5 py-[12px] rounded-[10px] items-center duration-600 hover:text-blue-800 focus:text-blue-800 hover:bg-blue-100 focus:bg-blue-100 hover:no-underline focus:no-underline hover:fill-white leading-none ";
+    "mb-1 flex px-5 py-[12px] rounded-[10px] items-center duration-600 hover:text-[#013A44] focus:text-[#013A44] hover:bg-[#ace6f0] focus:bg-[#ace6f0] hover:no-underline focus:no-underline hover:fill-white leading-none ";
 
   useEffect(() => {
     if (
@@ -63,7 +63,7 @@ const SidebarMenuItem: FC<Props> = ({ className, menuItem }) => {
           to={menuItem.to || "#"}
           className={({ isActive }: any) =>
             `${classes} ${
-              isActive ? "text-blue-800 bg-blue-100" : "text-gray-600"
+              isActive ? "text-[#ace6f0] bg-blue-100" : "text-gray-600"
             }`
           }
         >
