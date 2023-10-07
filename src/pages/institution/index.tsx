@@ -1,32 +1,26 @@
-import { ethers } from "ethers";
-import { FC } from "react";
+import React from "react";
 import { Loader, Table, Toggle } from "rsuite";
-import abi from "../../contracts/LearningToken.json";
 import {
   useGetInstitutionQuery,
   useUpdateInstitutionStatusMutation,
 } from "../../store/features/admin/adminApi";
-
+import { initWeb3 } from "../../utils";
 const { Column, HeaderCell, Cell } = Table;
-const SMART_CONTRACT = import.meta.env.VITE_SMART_CONTRACT;
-const Institution: FC = () => {
+
+const Institution: React.FC = () => {
   const { data, isLoading } = useGetInstitutionQuery();
   const [updateInstitutionStatus] = useUpdateInstitutionStatusMutation();
 
-  const toggleStatus = async () => {
-    if (window.ethereum) {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(SMART_CONTRACT!, abi, signer);
-      const tx = await contract.registerInstitution(
-        "cream_beans_digital",
-        "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f",
-        Date.now()
-      );
-      console.log(tx);
+  const toggleStatus = async (rowData: any) => {
+    const contract = await initWeb3();
+    const tx = await contract!.registerInstitution(
+      rowData.name,
+      rowData.publicAddress,
+      Date.now()
+    );
+    if (tx) {
+      await updateInstitutionStatus(rowData);
     }
-
-    // await updateInstitutionStatus(rowData);
   };
 
   if (isLoading) {
@@ -38,7 +32,6 @@ const Institution: FC = () => {
   }
   return (
     <div className="py-3">
-      <button onClick={() => toggleStatus()}>Connect</button>
       <Table data={data.result.data} autoHeight rowClassName={"cursor-pointer"}>
         <Column flexGrow={1} align="center" fixed>
           <HeaderCell>Id</HeaderCell>
@@ -58,10 +51,13 @@ const Institution: FC = () => {
         <Column flexGrow={1}>
           <HeaderCell>Status</HeaderCell>
           <Cell>
-            {(rowData) => {
+            {(rowData: any) => {
               return (
                 <>
-                  <Toggle checked={rowData.status} />
+                  <Toggle
+                    checked={rowData.status}
+                    onClick={() => toggleStatus(rowData)}
+                  />
                 </>
               );
             }}
