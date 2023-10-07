@@ -1,4 +1,5 @@
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
+import { FC } from "react";
 import { Loader, Table, Toggle } from "rsuite";
 import abi from "../../contracts/LearningToken.json";
 import {
@@ -8,19 +9,23 @@ import {
 
 const { Column, HeaderCell, Cell } = Table;
 const SMART_CONTRACT = import.meta.env.VITE_SMART_CONTRACT;
-const Institution = () => {
+const Institution: FC = () => {
   const { data, isLoading } = useGetInstitutionQuery();
   const [updateInstitutionStatus] = useUpdateInstitutionStatusMutation();
 
   const toggleStatus = async () => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const contract = new Contract("test", abi, provider);
-    console.log(contract);
+    if (window.ethereum) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(SMART_CONTRACT!, abi, signer);
+      const tx = await contract.registerInstitution(
+        "cream_beans_digital",
+        "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f",
+        Date.now()
+      );
+      console.log(tx);
+    }
 
-    // const signer = provider.getSigner();
-    // const conc = new ethers.Contract(SMART_CONTRACT!, abi, signer);
-    // console.log(conc);
     // await updateInstitutionStatus(rowData);
   };
 
