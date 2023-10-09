@@ -24,6 +24,7 @@ import {
   useLoginLearnerMutation,
   useRegisterLearnerMutation,
 } from "../store/features/learner/learnerApi";
+import { initWeb3 } from "../utils";
 const initialValues = {
   name: "",
   email: "",
@@ -123,8 +124,15 @@ const Login = () => {
           publicAddress: values.publicAddress,
         })
           .unwrap()
-          .then((result: any) => {
+          .then(async (result: any) => {
             if (result && result.status === 201) {
+              //web3 call
+              const contract = await initWeb3();
+              const tx = await contract!.registerInstructor(
+                values.name,
+                Date.now()
+              );
+              //
               loginInstructor({
                 email: values.email,
                 password: values.password,
@@ -147,8 +155,15 @@ const Login = () => {
           publicAddress: values.publicAddress,
         })
           .unwrap()
-          .then((result: any) => {
+          .then(async (result: any) => {
             if (result && result.status === 201) {
+              //web3 call
+              const contract = await initWeb3();
+              const tx = await contract!.registerLearner(
+                values.name,
+                Date.now()
+              );
+              //
               loginLearner({
                 email: values.email,
                 password: values.password,

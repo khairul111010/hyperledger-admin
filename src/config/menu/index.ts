@@ -40,6 +40,25 @@ const mainMenuItems = [
     icon: BsBoxSeam,
   },
   {
+    name: "Course",
+    to: "",
+    subMenu: [
+      {
+        name: "List",
+        to: "/course",
+      },
+      {
+        name: "Add",
+        to: "/course/add",
+      },
+      {
+        name: "Set Token",
+        to: "/course/set-token",
+      },
+    ],
+    icon: BsBoxSeam,
+  },
+  {
     name: "Excel",
     to: "",
     subMenu: [
