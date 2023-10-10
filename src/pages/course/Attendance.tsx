@@ -1,37 +1,36 @@
 import { Form, Formik, FormikProps } from "formik";
 import { useRef } from "react";
 import * as XLSX from "xlsx";
-import { array, object, string } from "yup";
+import { number, object, string } from "yup";
 import Button from "../../components/Button";
 import SelectInput from "../../components/SelectInput";
-import TextInput from "../../components/TextInput";
-import { useGetInstitutionQuery } from "../../store/features/admin/adminApi";
 import { initWeb3 } from "../../utils";
-
 const initialValues = {
-  courseName: "",
-  institution_address: "",
-  learnerAddress: [],
+  token_type: "attendance_token",
+  attendance: null,
 };
 
 const validationSchema = object().shape({
-  courseName: string().required("Name is required."),
-  institution_address: string().required("Please select an institution"),
-  learnerAddress: array().min(1).required("At least 1 learner should be added"),
+  token_type: string().required("Please select an institution"),
+  attendance: object()
+    .shape({
+      courseId: number(),
+      amount: number(),
+      learnerId: number(),
+    })
+    .required("At least 1 attendance should be added"),
 });
-
-const CourseNew = () => {
+const Attendance = () => {
   const formikRef = useRef<FormikProps<any>>(null);
-
-  const { data: institutionList, isLoading } = useGetInstitutionQuery();
 
   const handleSubmit = async (values: any) => {
     const contract = await initWeb3();
-    const tx = await contract!.createCourse(
-      values.institution_address,
-      values.courseName,
-      Date.now(),
-      values.learnerAddress
+
+    const tx = await contract!.mintAttendanceToken(
+      values.attendance.learnerId,
+      values.attendance.amount,
+      values.attendance.courseId,
+      Date.now()
     );
   };
 
@@ -45,14 +44,25 @@ const CourseNew = () => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-        const learnerAddress = jsonData.map(
-          (learner: any) => learner.learner_wallet
-        );
-        formik.setFieldValue("learnerAddress", learnerAddress);
+        const learnerAddress = jsonData.map((learner: any) => {
+          return {
+            courseId: learner.courseId,
+            amount: learner.amount,
+            learnerId: learner.learnerId,
+          };
+        });
+        formik.setFieldValue("attendance", learnerAddress[0]);
       };
       reader.readAsArrayBuffer(file);
     }
   };
+
+  const tokenType = [
+    { value: "attendance_token", label: "Attendance Token" },
+    { value: "helping_token", label: "Helping Token" },
+    { value: "score_token", label: "Score Token" },
+    { value: "instructorScore_token", label: "Instructor Score Token" },
+  ];
 
   return (
     <div className="w-[800px] mx-auto my-8">
@@ -64,31 +74,16 @@ const CourseNew = () => {
       >
         {(formik) => (
           <Form className="flex flex-col items-center justify-between">
-            <TextInput
-              name="courseName"
-              type="text"
-              label="Course Name"
-              containerStyle={`w-full`}
-              size="small"
-            />
             <SelectInput
               containerStyle={"w-full"}
-              label="Institution"
+              label="Token"
               size="small"
-              name="institution_address"
-              options={
-                institutionList?.result?.data.map((i: any) => {
-                  return {
-                    value: i.publicAddress,
-                    label: i.name + " - " + i.publicAddress,
-                  };
-                }) || []
-              }
-              isLoading={isLoading}
+              name="token_type"
+              options={tokenType}
             />
             <input
               type="file"
-              name="learnerAddress"
+              name="attendance"
               onChange={(event) => handleFileChange(event, formik)}
             />
             <Button
@@ -97,7 +92,7 @@ const CourseNew = () => {
               variant="primary"
               type="submit"
             >
-              Add Course
+              Distribute
             </Button>
           </Form>
         )}
@@ -106,4 +101,4 @@ const CourseNew = () => {
   );
 };
 
-export default CourseNew;
+export default Attendance;

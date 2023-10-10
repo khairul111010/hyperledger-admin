@@ -1,9 +1,12 @@
+import { ethers } from "ethers";
 import { Form, Formik, FormikProps } from "formik";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { object, string } from "yup";
 import Button from "../../components/Button";
+import SelectInput from "../../components/SelectInput";
 import TextInput from "../../components/TextInput";
-import { initWeb3 } from "../../utils";
+import { useGetInstitutionQuery } from "../../store/features/admin/adminApi";
+import { initWeb3Method } from "../../utils";
 const initialValues = {
   courseId: "",
   institutionId: "",
@@ -21,102 +24,152 @@ const validationSchema = object().shape({
   skillName: string().required("This field is required."),
   institutionAddress: string().required("This field is required."),
 });
+const contract = await initWeb3Method();
+
 const SetToken = () => {
+  const [courseIdOptions, setCourseIdOptions] = useState([]);
+  const [instructorIdOptions, setInstructorIdOptions] = useState<
+    { value: number; label: string }[]
+  >([]);
+
   const formikRef = useRef<FormikProps<any>>(null);
-
+  const { data: institutionList } = useGetInstitutionQuery();
   const handleSubmit = async (values: any) => {
-    console.log(values);
-
-    // const contract = await initWeb3();
+    const insId = await setinstitutionId(values.institutionId);
+    const tx = await contract!.setTokenMetadata(
+      values.courseId,
+      insId,
+      values.instructorId,
+      values.fieldOfKnowledge,
+      values.skillName,
+      values.institutionAddress,
+      Date.now()
+    );
   };
 
-  const getCourse = async () => {
-    // getCoursesBySender;
-    const contract = await initWeb3();
-    const tx = await contract!.getCoursesBySender();
+  useEffect(() => {
+    getCourse();
+    getInstructors();
+    meta();
+  }, []);
 
+  const getCourse = async () => {
+    const tx = await contract!.getCoursesBySender();
+    let temp: any = [];
+    for (let key in tx) {
+      if (tx.hasOwnProperty(key)) {
+        if (Array.isArray(tx[key])) {
+          let obj: any = {};
+          tx[key].forEach((item: any, index: number) => {
+            if (index === 1) {
+              obj["value"] = Number(item);
+            } else {
+              obj["label"] = item;
+            }
+          });
+
+          temp.push(obj);
+        } else {
+        }
+      }
+    }
+
+    setCourseIdOptions(temp);
+  };
+
+  const getInstructors = async () => {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    const tx = await contract!.instructors(address);
+    setInstructorIdOptions([{ value: Number(tx[0]), label: tx[1] }]);
+  };
+
+  const setinstitutionId = async (address: string) => {
+    const tx = await contract!.institutions(address);
+    return Number(tx[0]);
+  };
+
+  const meta = async () => {
+    const tx = await contract!.tokenMetadatas(0);
     console.log(tx);
   };
 
   return (
     <div className="w-[800px] mx-auto my-8">
-      <button onClick={getCourse}>Get course</button>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         innerRef={formikRef}
         onSubmit={handleSubmit}
       >
-        {(formik) => (
-          <Form className="flex flex-col items-center justify-between">
-            <TextInput
-              name="courseId"
-              type="text"
-              label="Course ID"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            <TextInput
-              name="institutionId"
-              type="text"
-              label="Institution ID"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            <TextInput
-              name="instructorId"
-              type="text"
-              label="Instructor ID"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            <TextInput
-              name="fieldOfKnowledge"
-              type="text"
-              label="Field Of Knowledge"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            <TextInput
-              name="skillName"
-              type="text"
-              label="Skill Name"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            <TextInput
-              name="institutionAddress"
-              type="text"
-              label="Institution Address"
-              containerStyle={`w-full`}
-              size="small"
-            />
-            {/* <SelectInput
-              containerStyle={"w-full"}
-              label="Institution"
-              size="small"
-              name="institution_address"
-              options={
-                institutionList?.result?.data.map((i: any) => {
-                  return {
-                    value: i.publicAddress,
-                    label: i.name + " - " + i.publicAddress,
-                  };
-                }) || []
-              }
-              isLoading={isLoading}
-            /> */}
+        <Form className="flex flex-col items-center justify-between">
+          <SelectInput
+            name="courseId"
+            label="Course ID"
+            containerStyle={`w-full`}
+            size="small"
+            options={courseIdOptions || []}
+          />
+          <SelectInput
+            name="instructorId"
+            label="Instructor ID"
+            containerStyle={`w-full`}
+            size="small"
+            options={instructorIdOptions || []}
+          />
+          <SelectInput
+            name="institutionId"
+            label="Institution ID"
+            containerStyle={`w-full`}
+            size="small"
+            options={
+              institutionList?.result?.data.map((i: any) => {
+                return {
+                  value: i.publicAddress,
+                  label: i.name + " - " + i.publicAddress,
+                };
+              }) || []
+            }
+          />
+          <TextInput
+            name="fieldOfKnowledge"
+            type="text"
+            label="Field Of Knowledge"
+            containerStyle={`w-full`}
+            size="small"
+          />
+          <TextInput
+            name="skillName"
+            type="text"
+            label="Skill Name"
+            containerStyle={`w-full`}
+            size="small"
+          />
 
-            <Button
-              size="small"
-              className="w-full"
-              variant="primary"
-              type="submit"
-            >
-              Set Token
-            </Button>
-          </Form>
-        )}
+          <SelectInput
+            name="institutionAddress"
+            label="Institution Address"
+            containerStyle={`w-full`}
+            size="small"
+            options={
+              institutionList?.result?.data.map((i: any) => {
+                return {
+                  value: i.publicAddress,
+                  label: i.name + " - " + i.publicAddress,
+                };
+              }) || []
+            }
+          />
+          <Button
+            size="small"
+            className="w-full"
+            variant="primary"
+            type="submit"
+          >
+            Set Token
+          </Button>
+        </Form>
       </Formik>
     </div>
   );

@@ -55,6 +55,10 @@ const mainMenuItems = [
         name: "Set Token",
         to: "/course/set-token",
       },
+      {
+        name: "Distribute Token",
+        to: "/course/attendance",
+      },
     ],
     icon: BsBoxSeam,
   },
