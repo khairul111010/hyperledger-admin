@@ -13,6 +13,7 @@ const mainMenuItems = [
       {
         name: "List",
         to: "/instructor",
+        requiredPermissions: ["institution"],
       },
     ],
     icon: BsBoxSeam,
@@ -24,6 +25,7 @@ const mainMenuItems = [
       {
         name: "List",
         to: "/institution",
+        requiredPermissions: ["admin"],
       },
     ],
     icon: BsBoxSeam,
@@ -35,6 +37,7 @@ const mainMenuItems = [
       {
         name: "List",
         to: "/learner",
+        requiredPermissions: ["institution", "instructor"],
       },
     ],
     icon: BsBoxSeam,
@@ -46,33 +49,37 @@ const mainMenuItems = [
       {
         name: "List",
         to: "/course",
+        requiredPermissions: ["instructor", "learner"],
       },
       {
         name: "Add",
         to: "/course/add",
+        requiredPermissions: ["instructor"],
       },
       {
         name: "Set Token",
         to: "/course/set-token",
+        requiredPermissions: ["instructor"],
       },
       {
         name: "Distribute Token",
         to: "/course/attendance",
+        requiredPermissions: ["instructor"],
       },
     ],
     icon: BsBoxSeam,
   },
-  {
-    name: "Excel",
-    to: "",
-    subMenu: [
-      {
-        name: "List",
-        to: "/excel",
-      },
-    ],
-    icon: BsBoxSeam,
-  },
+  // {
+  //   name: "Excel",
+  //   to: "",
+  //   subMenu: [
+  //     {
+  //       name: "List",
+  //       to: "/excel",
+  //     },
+  //   ],
+  //   icon: BsBoxSeam,
+  // },
 ];
 
 export default mainMenuItems;

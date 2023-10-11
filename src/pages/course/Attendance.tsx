@@ -32,6 +32,8 @@ const Attendance = () => {
       values.attendance.courseId,
       Date.now()
     );
+
+    console.log(tx);
   };
 
   const handleFileChange = (e: any, formik: any) => {
